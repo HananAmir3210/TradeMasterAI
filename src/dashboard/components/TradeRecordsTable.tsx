@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Eye, Edit, Trash2, Zap, Calendar, DollarSign, TrendingUp, TrendingDown, Image, Target, Clock, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import TradeEntryForm from "../components/TradeEntryForm";
+import ProfitLossDisplay from './ProfitLossDisplay';
 
 interface Trade {
   id: string;
+  title?: string;
   trade_pair: string;
   entry_price: number;
   exit_price?: number | null;
@@ -42,10 +45,11 @@ export default function TradeRecordsTable({
   className 
 }: TradeRecordsTableProps) {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'open' | 'closed' | 'cancelled'>('all');
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [analyzingTradeId, setAnalyzingTradeId] = useState<string | null>(null);
 
   const filteredTrades = trades.filter(trade => {
@@ -278,6 +282,11 @@ export default function TradeRecordsTable({
                         <td className="p-4">
                           <div>
                             <div className="font-medium text-foreground">{trade.trade_pair}</div>
+                            {(trade.title || trade.notes) && (
+                              <div className="text-xs text-muted-foreground truncate max-w-[200px] mt-1">
+                                {trade.title || trade.notes?.substring(0, 50) + (trade.notes?.length > 50 ? '...' : '')}
+                              </div>
+                            )}
                             <div className="text-xs text-muted-foreground">{trade.timeframe}</div>
                           </div>
                         </td>
@@ -324,7 +333,7 @@ export default function TradeRecordsTable({
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => setSelectedTrade(trade)}
+                              onClick={() => navigate(`/dashboard/trade/${trade.id}`)}
                               className="hover:bg-primary/20"
                             >
                               <Eye className="h-4 w-4" />
@@ -392,161 +401,9 @@ export default function TradeRecordsTable({
         </CardContent>
       </Card>
 
-      {/* Trade Detail Modal */}
-      <Dialog open={!!selectedTrade} onOpenChange={() => setSelectedTrade(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-primary" />
-              Trade Details - {selectedTrade?.trade_pair}
-            </DialogTitle>
-          </DialogHeader>
-          
-          {selectedTrade && (
-            <div className="space-y-6">
-              {/* Trade Overview */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="text-sm text-muted-foreground">Asset</div>
-                  <div className="font-medium text-foreground">{selectedTrade.trade_pair}</div>
-                </div>
-                <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="text-sm text-muted-foreground">Position</div>
-                  <div className="font-medium text-foreground capitalize">{selectedTrade.trade_type}</div>
-                </div>
-                <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="text-sm text-muted-foreground">Size</div>
-                  <div className="font-medium text-foreground">{selectedTrade.lot_size}</div>
-                </div>
-                <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="text-sm text-muted-foreground">Status</div>
-                  <Badge className={getStatusColor(selectedTrade.status)}>
-                    {selectedTrade.status}
-                  </Badge>
-                </div>
-              </div>
 
-              {/* Price Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="text-sm text-muted-foreground mb-2">Entry Price</div>
-                  <div className="text-2xl font-bold text-foreground">{selectedTrade.entry_price}</div>
-                </div>
-                <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                  <div className="text-sm text-muted-foreground mb-2">Exit Price</div>
-                  <div className="text-2xl font-bold text-foreground">
-                    {selectedTrade.exit_price || 'Still Open'}
-                  </div>
-                </div>
-              </div>
 
-              {/* P&L Calculation */}
-              {selectedTrade.status === 'closed' && (
-                <div className="p-6 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-medium text-foreground mb-2">Trade Result</h3>
-                      <p className="text-muted-foreground">Final profit/loss calculation</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted-foreground">P&L</div>
-                      <div className={`text-3xl font-bold ${calculatePnL(selectedTrade) >= 0 ? 'text-success' : 'text-destructive'}`}>
-                        ${calculatePnL(selectedTrade).toFixed(2)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
 
-              {/* Chart Screenshot */}
-              {selectedTrade.chart_screenshot_url && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium text-foreground flex items-center gap-2">
-                    <Image className="h-5 w-5" />
-                    Chart Analysis
-                  </h3>
-                  <div className="rounded-lg border border-border overflow-hidden">
-                    <img
-                      src={selectedTrade.chart_screenshot_url}
-                      alt="Trade Chart"
-                      className="w-full h-auto"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Trade Notes */}
-              {selectedTrade.notes && (
-                <div className="space-y-2">
-                  <h3 className="text-lg font-medium text-foreground">Trade Notes</h3>
-                  <div className="p-4 rounded-lg bg-muted/30 border border-border">
-                    <p className="text-foreground whitespace-pre-wrap">{selectedTrade.notes}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* AI Analysis Placeholder */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-foreground flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-primary" />
-                  AI Analysis
-                </h3>
-                <div className="p-6 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                    <span className="text-sm text-muted-foreground">AI analysis available</span>
-                  </div>
-                  <p className="text-foreground mb-4">
-                    This trade shows good risk management with a proper stop-loss placement. 
-                    The entry timing aligns well with market momentum. Consider taking partial 
-                    profits at key resistance levels in future similar setups.
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-success border-success/20 bg-success/10">
-                      Score: 85/100
-                    </Badge>
-                    <Badge variant="outline" className="text-primary border-primary/20 bg-primary/10">
-                      Risk Management: Excellent
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trade Timestamps */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border">
-                <div>
-                  <div className="text-sm text-muted-foreground">Created</div>
-                  <div className="font-medium text-foreground">{formatDate(selectedTrade.created_at)}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Last Updated</div>
-                  <div className="font-medium text-foreground">{formatDate(selectedTrade.updated_at)}</div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-4">
-                <Button
-                  onClick={() => handleEdit(selectedTrade)}
-                  className="btn-premium flex-1"
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Trade
-                </Button>
-                <Button
-                  onClick={() => handleAnalyze(selectedTrade.id)}
-                  disabled={analyzingTradeId === selectedTrade.id}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  <Zap className="h-4 w-4 mr-2" />
-                  {analyzingTradeId === selectedTrade.id ? 'Analyzing...' : 'Re-analyze'}
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

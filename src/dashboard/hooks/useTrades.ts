@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { unscaleTrades } from '../utils/priceScaling';
 
 export interface Trade {
   id: string;
@@ -40,7 +41,10 @@ export const useTrades = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTrades((data || []) as Trade[]);
+      
+      // Unscale any trades that were scaled down during saving
+      const unscaledTrades = unscaleTrades((data || []) as Trade[]);
+      setTrades(unscaledTrades);
     } catch (error) {
       console.error('Error fetching trades:', error);
       toast({
@@ -55,29 +59,65 @@ export const useTrades = () => {
 
   const addTrade = async (tradeData: Omit<Trade, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
+      console.log('=== ADD TRADE DEBUG (useTrades hook) ===');
+      console.log('Received trade data:', tradeData);
+      
+      console.log('Checking authentication...');
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      console.log('Auth result:', { user: user?.id, authError });
+      
+      if (authError) {
+        console.error('Authentication error:', authError);
+        throw new Error(`Authentication failed: ${authError.message}`);
+      }
+      
+      if (!user) {
+        console.error('No user found');
+        throw new Error('Not authenticated - no user found');
+      }
+      
+      const dataToInsert = { ...tradeData, user_id: user.id };
+      console.log('Data to insert into database:', dataToInsert);
+      
+      console.log('Inserting into Supabase...');
       const { data, error } = await supabase
         .from('trades')
-        .insert({ ...tradeData, user_id: user.id })
+        .insert(dataToInsert)
         .select()
         .single();
-
-      if (error) throw error;
       
-      setTrades(prev => [data as Trade, ...prev]);
+      console.log('Supabase insert result:', { data, error });
+      
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
+      
+      console.log('Trade inserted successfully, updating local state...');
+      // Unscale the newly added trade before adding to state
+      const unscaledTrade = unscaleTrades([data as Trade])[0];
+      setTrades(prev => [unscaledTrade, ...prev]);
+      
+      console.log('Showing success toast...');
       toast({
         title: "Trade added successfully",
         description: "Your trade has been logged.",
       });
       
+      console.log('addTrade completed successfully');
       return data;
-    } catch (error) {
-      console.error('Error adding trade:', error);
+    } catch (error: any) {
+      console.error('=== ADD TRADE ERROR (useTrades hook) ===');
+      console.error('Error object:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error details:', error?.details);
+      console.error('Error hint:', error?.hint);
+      console.error('Error code:', error?.code);
+      console.error('Full error JSON:', JSON.stringify(error, null, 2));
+      
       toast({
         title: "Error adding trade",
-        description: "Failed to add your trade. Please try again.",
+        description: error?.message || error?.details || (typeof error === 'string' ? error : 'Failed to add your trade. Please try again.'),
         variant: "destructive",
       });
       throw error;
@@ -99,8 +139,10 @@ export const useTrades = () => {
 
       if (error) throw error;
       
+      // Unscale the updated trade before updating state
+      const unscaledTrade = unscaleTrades([data as Trade])[0];
       setTrades(prev => prev.map(trade => 
-        trade.id === tradeId ? { ...trade, ...data } : trade
+        trade.id === tradeId ? { ...trade, ...unscaledTrade } : trade
       ));
       
       toast({

@@ -111,3 +111,11 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Allow high-value assets (e.g., Bitcoin) by increasing numeric precision
+ALTER TABLE trades
+  ALTER COLUMN entry_price TYPE numeric(20,8),
+  ALTER COLUMN exit_price TYPE numeric(20,8),
+  ALTER COLUMN stop_loss TYPE numeric(20,8),
+  ALTER COLUMN take_profit TYPE numeric(20,8),
+  ALTER COLUMN lot_size TYPE numeric(20,8);
