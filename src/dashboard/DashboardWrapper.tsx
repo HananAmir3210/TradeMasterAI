@@ -15,6 +15,7 @@ import Records from "../pages/dashboard/Records";
 import Charts from "../pages/dashboard/Charts";
 import AIAnalysis from "../pages/dashboard/AIAnalysis";
 import Profile from "../pages/dashboard/Profile";
+import TradeDetails from "../pages/dashboard/TradeDetails";
 import TradingDashboard from "./components/TradingDashboard";
 import { DashboardProvider } from "./context/DashboardContext";
 
@@ -69,6 +70,7 @@ const DashboardWrapper = () => {
               <Route path="home" element={<Home />} />
               <Route path="log-trades" element={<LogTrades />} />
               <Route path="records" element={<Records />} />
+              <Route path="trade/:id" element={<TradeDetails />} />
               <Route path="charts" element={<Charts />} />
               <Route path="ai-analysis" element={<AIAnalysis />} />
               <Route path="profile" element={<Profile />} />

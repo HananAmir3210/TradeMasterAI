@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import AIFeedbackCard from "../components/AIFeedbackCard";
+import AIInsightCard from "../components/AIInsightCard";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 interface DashboardHomeProps {
@@ -109,12 +109,7 @@ export default function DashboardHome({ trades, userName = "Alex", className }: 
     setChartData(chartData);
   }, [trades]);
 
-  const sampleAIFeedback = {
-    type: 'success' as const,
-    title: 'Strong Performance This Week',
-    message: 'Your EUR/USD and GBP/USD trades showed excellent risk management with consistent 2% risk allocation. Your entry timing has improved by 23% compared to last month.',
-    score: 87
-  };
+  // AI Feedback is now handled by AIInsightCard component
 
   const StatCard = ({ title, value, icon: Icon, trend, subtitle, delay }: {
     title: string;
@@ -263,43 +258,11 @@ export default function DashboardHome({ trades, userName = "Alex", className }: 
 
         {/* AI Insights */}
         <div className="space-y-6">
-          <Card className="glass-card animate-reveal animate-reveal-delay-3">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-primary" />
-                Latest AI Insight
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AIFeedbackCard feedback={sampleAIFeedback} />
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card className="glass-card animate-reveal animate-reveal-delay-4">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-secondary" />
-                Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="premium" className="w-full">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                Log New Trade
-              </Button>
-              <Button variant="glass" className="w-full">
-                <Brain className="h-4 w-4 mr-2" />
-                AI Strategy Review
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Calendar className="h-4 w-4 mr-2" />
-                Trading Journal
-              </Button>
-            </CardContent>
-          </Card>
+          <AIInsightCard className="glass-card animate-reveal animate-reveal-delay-3" />
         </div>
       </div>
+
+
 
       {/* Additional Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

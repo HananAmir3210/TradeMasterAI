@@ -160,42 +160,120 @@ export default function TradeEntryForm({ onTradeAdded, editingTrade, onTradeUpda
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
+    // Set different max limits based on asset type
+    const isCrypto = formData.asset.includes('BTC') || formData.asset.includes('ETH') || 
+                     formData.asset.includes('XRP') || formData.asset.includes('ADA') || 
+                     formData.asset.includes('SOL') || formData.asset.includes('/USD');
+  
+    const maxPriceAllowed = isCrypto ? 999999.99 : 99999.99; // 1M for crypto, 100K for others
+    const maxLotSizeAllowed = 999999.99; // Keep lot size limit reasonable
+  
+    if (
+      parseFloat(formData.entryPrice) > maxPriceAllowed ||
+      (formData.exitPrice && parseFloat(formData.exitPrice) > maxPriceAllowed) ||
+      (formData.stopLoss && parseFloat(formData.stopLoss) > maxPriceAllowed) ||
+      (formData.takeProfit && parseFloat(formData.takeProfit) > maxPriceAllowed)
+    ) {
+      toast({
+        title: "Price too large",
+        description: `Prices must be less than ${isCrypto ? '1,000,000' : '100,000'} for ${isCrypto ? 'cryptocurrencies' : 'this asset type'}.`,
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+  
+    if (parseFloat(formData.lotSize) > maxLotSizeAllowed) {
+      toast({
+        title: "Position size too large",
+        description: "Position size must be less than 1,000,000.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Upload screenshots if any
+      // Convert screenshots to base64 data URLs for storage
       let screenshotUrl = null;
       if (screenshots.length > 0) {
-        // In a real implementation, you would upload to a storage service
-        // For now, we'll use a placeholder URL
-        screenshotUrl = `screenshot_${Date.now()}.jpg`;
+        try {
+          // Convert the first screenshot to base64 data URL
+          const file = screenshots[0];
+          const base64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+          screenshotUrl = base64;
+        } catch (uploadError) {
+          console.error('Failed to process screenshot:', uploadError);
+          toast({
+            title: "Screenshot Upload Warning",
+            description: "Failed to process screenshot, but trade will be saved without it.",
+            variant: "destructive",
+          });
+        }
       }
 
-      const tradeData = {
-        title: formData.title,
-        asset: formData.asset,
-        date: formData.date,
-        time: formData.time,
-        entryPrice: parseFloat(formData.entryPrice),
-        exitPrice: formData.exitPrice ? parseFloat(formData.exitPrice) : null,
-        stopLoss: formData.stopLoss ? parseFloat(formData.stopLoss) : null,
-        takeProfit: formData.takeProfit ? parseFloat(formData.takeProfit) : null,
-        positionType: formData.positionType,
-        lotSize: parseFloat(formData.lotSize),
-        riskPercent: formData.riskPercent ? parseFloat(formData.riskPercent) : null,
+      // Map form data to Supabase schema
+      // Combine title and notes since database doesn't have separate title field
+      const combinedNotes = formData.title ? 
+        (formData.notes ? `${formData.title}\n\n${formData.notes}` : formData.title) : 
+        (formData.notes || null);
+      
+      // WORKAROUND: Scale down large values to fit database precision NUMERIC(10,5)
+      // Database can only store values < 100,000, so we scale down by factor of 10 for large values
+      const entryPrice = parseFloat(formData.entryPrice);
+      const exitPrice = formData.exitPrice ? parseFloat(formData.exitPrice) : null;
+      const lotSize = parseFloat(formData.lotSize);
+      
+      // Check if we need to scale (for values >= 100,000)
+      const needsScaling = entryPrice >= 100000 || (exitPrice && exitPrice >= 100000);
+      const scaleFactor = needsScaling ? 10 : 1;
+      
+      // Add scaling info to notes so we can scale back up when reading
+      const scalingNote = needsScaling ? `[SCALED_x${scaleFactor}]` : '';
+      const finalNotes = scalingNote ? 
+        (combinedNotes ? `${scalingNote} ${combinedNotes}` : scalingNote) : 
+        combinedNotes;
+      
+      const mappedTradeData = {
+        trade_pair: formData.asset,
+        trade_type: formData.positionType,
+        entry_price: entryPrice / scaleFactor,
+        exit_price: exitPrice ? exitPrice / scaleFactor : null,
+        lot_size: lotSize, // Don't scale lot size
         timeframe: formData.timeframe,
-        notes: formData.notes,
-        screenshots: screenshots,
-        screenshotUrl: screenshotUrl,
-        pnl: calculatePnL(),
-        riskReward: calculateRiskReward()
+        status: exitPrice ? "closed" : "open", // Set status based on whether exit price is provided
+        notes: finalNotes,
+        chart_screenshot_url: screenshotUrl,
+        // user_id will be added in the hook
       };
 
+      console.log('=== TRADE SAVE DEBUG ===');
+      console.log('Form data:', formData);
+      console.log('Mapped trade data:', mappedTradeData);
+      console.log('Screenshots:', screenshots);
+      console.log('Is editing:', !!editingTrade);
+
       if (editingTrade && onTradeUpdated) {
-        await onTradeUpdated(editingTrade.id, tradeData);
+        console.log('Updating existing trade:', editingTrade.id);
+        await onTradeUpdated(editingTrade.id, mappedTradeData);
       } else {
-        await onTradeAdded(tradeData);
+        console.log('Adding new trade...');
+        await onTradeAdded(mappedTradeData);
       }
+      
+      console.log('Trade save completed successfully');
+      
+      toast({
+        title: "Success!",
+        description: "Trade saved successfully.",
+      });
       
       // Reset form if not editing
       if (!editingTrade) {
@@ -221,11 +299,28 @@ export default function TradeEntryForm({ onTradeAdded, editingTrade, onTradeUpda
         setPreviewUrls([]);
       }
       
-    } catch (error) {
-      console.error('Error submitting trade:', error);
+    } catch (error: any) {
+      console.error('=== TRADE SAVE ERROR ===');
+      console.error('Error object:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error details:', error?.details);
+      console.error('Error hint:', error?.hint);
+      console.error('Error code:', error?.code);
+      console.error('Full error JSON:', JSON.stringify(error, null, 2));
+      
+      // More specific error message
+      let errorMessage = "Failed to save trade. Please try again.";
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.details) {
+        errorMessage = error.details;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
       toast({
-        title: "Error",
-        description: "Failed to save trade. Please try again.",
+        title: "Error Saving Trade",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
