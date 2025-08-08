@@ -19,7 +19,12 @@ import {
   Home,
   User,
   Activity,
+<<<<<<< HEAD
   LogOut
+=======
+  LogOut,
+  Menu
+>>>>>>> 74acc0a (Initial commit of my project)
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -72,6 +77,7 @@ export default function TradingDashboard() {
       <nav className="border-b border-border bg-card/50 backdrop-blur-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+<<<<<<< HEAD
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
                 <Brain className="h-5 w-5 text-background" />
@@ -80,6 +86,16 @@ export default function TradingDashboard() {
             </div>
             
             <div className="flex items-center gap-6">
+=======
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+                <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-background" />
+              </div>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground">TradeMaster AI</h1>
+            </div>
+            
+            <div className="hidden md:flex items-center gap-4 lg:gap-6">
+>>>>>>> 74acc0a (Initial commit of my project)
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname.startsWith(item.to);
@@ -87,6 +103,7 @@ export default function TradingDashboard() {
                   <Link
                     key={item.label}
                     to={item.to}
+<<<<<<< HEAD
                     className={`px-3 py-2 text-sm font-medium transition-colors flex items-center ${
                       isActive
                         ? 'text-primary'
@@ -95,6 +112,16 @@ export default function TradingDashboard() {
                   >
                     <Icon className="h-4 w-4 mr-2 inline" />
                     {item.label}
+=======
+                    className={`px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium transition-colors flex items-center rounded-md hover:bg-accent ${
+                      isActive
+                        ? 'text-primary bg-accent'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <Icon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 inline" />
+                    <span className="hidden lg:inline">{item.label}</span>
+>>>>>>> 74acc0a (Initial commit of my project)
                   </Link>
                 );
               })}
@@ -107,6 +134,21 @@ export default function TradingDashboard() {
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
+<<<<<<< HEAD
+=======
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {/* TODO: Add mobile menu */}}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
+            </div>
+>>>>>>> 74acc0a (Initial commit of my project)
           </div>
         </div>
       </nav>

@@ -22,7 +22,11 @@ interface DashboardHomeProps {
   className?: string;
 }
 
+<<<<<<< HEAD
 export default function DashboardHome({ trades, userName = "Alex", className }: DashboardHomeProps) {
+=======
+export default function DashboardHome({ trades, userName, className }: DashboardHomeProps) {
+>>>>>>> 74acc0a (Initial commit of my project)
   const [stats, setStats] = useState({
     totalTrades: 0,
     winRate: 0,
@@ -150,7 +154,11 @@ export default function DashboardHome({ trades, userName = "Alex", className }: 
       {/* Welcome Section */}
       <div className="animate-reveal">
         <h1 className="text-4xl font-bold text-foreground mb-2">
+<<<<<<< HEAD
           Welcome back, {userName} 👋
+=======
+          Welcome back, {userName || 'Trader'} 👋
+>>>>>>> 74acc0a (Initial commit of my project)
         </h1>
         <p className="text-muted-foreground text-lg">
           Here's your trading performance overview and latest insights

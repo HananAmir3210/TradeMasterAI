@@ -45,7 +45,11 @@ const FeaturesSection = () => {
       transition={{ duration: 0.8, ease: 'easeOut' }}
       id="features" className="section-spacing"
     >
+<<<<<<< HEAD
       <div className="max-w-7xl mx-auto container-padding">
+=======
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+>>>>>>> 74acc0a (Initial commit of my project)
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -54,14 +58,22 @@ const FeaturesSection = () => {
             hidden: {},
             visible: { transition: { staggerChildren: 0.12 } }
           }}
+<<<<<<< HEAD
           className="text-center mb-20 animate-fade-in space-y-6"
+=======
+          className="text-center mb-12 sm:mb-16 lg:mb-20 animate-fade-in space-y-4 sm:space-y-6"
+>>>>>>> 74acc0a (Initial commit of my project)
         >
           <motion.h2
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } }
             }}
+<<<<<<< HEAD
             className="text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight text-white"
+=======
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight text-white px-4"
+>>>>>>> 74acc0a (Initial commit of my project)
           >
             Features Built for <span className="bg-gradient-to-r from-[#00C896] via-[#00BFFF] to-[#00FFAA] bg-clip-text text-transparent">Excellence</span>
           </motion.h2>
@@ -70,7 +82,11 @@ const FeaturesSection = () => {
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
             }}
+<<<<<<< HEAD
             className="subheadline-text max-w-3xl mx-auto text-[#E0E0E0]"
+=======
+            className="subheadline-text max-w-2xl sm:max-w-3xl mx-auto text-[#E0E0E0] px-4 text-sm sm:text-base"
+>>>>>>> 74acc0a (Initial commit of my project)
           >
             Every feature designed to help you become a consistently profitable trader through intelligent analysis.
           </motion.p>
@@ -84,7 +100,11 @@ const FeaturesSection = () => {
             hidden: {},
             visible: { transition: { staggerChildren: 0.10 } }
           }}
+<<<<<<< HEAD
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+=======
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+>>>>>>> 74acc0a (Initial commit of my project)
         >
           {features.map((feature, index) => (
             <motion.div
@@ -93,6 +113,7 @@ const FeaturesSection = () => {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
               }}
+<<<<<<< HEAD
               className="group premium-card features-glow rounded-2xl p-5 premium-hover animate-scale-in relative overflow-hidden"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -103,6 +124,18 @@ const FeaturesSection = () => {
                 {feature.title}
               </h3>
               <p className="body-text leading-relaxed text-xs text-[#E0E0E0]">
+=======
+              className="group premium-card features-glow rounded-xl sm:rounded-2xl p-4 sm:p-5 premium-hover animate-scale-in relative overflow-hidden"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className="mb-3 sm:mb-4 p-2 rounded-lg sm:rounded-xl w-fit group-hover:bg-[#00C896]/10 transition-colors duration-300 bg-[#00BFFF]/10">
+                {React.cloneElement(feature.icon, { className: 'w-5 h-5 sm:w-6 sm:h-6', style: { color: index % 2 === 0 ? '#00C896' : '#00BFFF' } })}
+              </div>
+              <h3 className="text-sm sm:text-base font-medium mb-2 text-white group-hover:text-[#00C896] transition-colors duration-300">
+                {feature.title}
+              </h3>
+              <p className="body-text leading-relaxed text-xs sm:text-sm text-[#E0E0E0]">
+>>>>>>> 74acc0a (Initial commit of my project)
                 {feature.description}
               </p>
             </motion.div>

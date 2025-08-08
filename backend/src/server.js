@@ -1,8 +1,19 @@
+<<<<<<< HEAD
+=======
+const mongoURI = "mongodb+srv://hananamir3210:LjIPzBq3POhCktre@cluster0.cnys4le.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const express = require('express');
+const connectDB = require('./db');
+
+>>>>>>> 74acc0a (Initial commit of my project)
 /**
  * TradeMaster AI Backend Server
  * Main entry point for the AI-powered trading strategy tracker
  */
+<<<<<<< HEAD
 
+=======
+const mongoose = require('mongoose');
+>>>>>>> 74acc0a (Initial commit of my project)
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');

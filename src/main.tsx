@@ -17,7 +17,11 @@ const TorchEffect = () => {
       torch.style.setProperty('--torch-y', `${e.clientY}px`);
     };
 
+<<<<<<< HEAD
     if (location.pathname.startsWith('/dashboard')) {
+=======
+    if (location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin')) {
+>>>>>>> 74acc0a (Initial commit of my project)
       torch.style.display = 'none';
       document.removeEventListener('mousemove', onMouseMove);
     } else {

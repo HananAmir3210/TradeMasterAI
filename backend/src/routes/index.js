@@ -2,7 +2,13 @@
  * Routes Index
  * Central route configuration and API documentation
  */
+<<<<<<< HEAD
 
+=======
+const mongoose = require('mongoose');
+const express = require('express');
+const connectDB = require('./db');
+>>>>>>> 74acc0a (Initial commit of my project)
 const express = require('express');
 const authRoutes = require('./auth');
 const tradesRoutes = require('./trades');

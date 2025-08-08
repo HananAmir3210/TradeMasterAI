@@ -59,7 +59,11 @@ const PricingSection = () => {
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.6 }}
+<<<<<<< HEAD
       id="pricing" className="py-16 bg-gradient-to-b from-dark to-dark-lighter"
+=======
+      id="pricing" className="py-12 sm:py-16 bg-gradient-to-b from-dark to-dark-lighter"
+>>>>>>> 74acc0a (Initial commit of my project)
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,14 +75,22 @@ const PricingSection = () => {
             hidden: {},
             visible: { transition: { staggerChildren: 0.12 } }
           }}
+<<<<<<< HEAD
           className="text-center mb-10 animate-fade-in"
+=======
+          className="text-center mb-8 sm:mb-10 animate-fade-in"
+>>>>>>> 74acc0a (Initial commit of my project)
         >
           <motion.h2
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } }
             }}
+<<<<<<< HEAD
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4"
+=======
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 px-4"
+>>>>>>> 74acc0a (Initial commit of my project)
           >
             Choose Your <span className="gradient-text">Trading Edge</span>
           </motion.h2>
@@ -87,7 +99,11 @@ const PricingSection = () => {
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
             }}
+<<<<<<< HEAD
             className="text-base text-gray-300 max-w-2xl mx-auto mb-6"
+=======
+            className="text-sm sm:text-base text-gray-300 max-w-xl sm:max-w-2xl mx-auto mb-6 px-4"
+>>>>>>> 74acc0a (Initial commit of my project)
           >
             Start with our free trial, then choose the plan that matches your trading ambitions. 
             All plans include our core AI features.
@@ -97,9 +113,15 @@ const PricingSection = () => {
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
             }}
+<<<<<<< HEAD
             className="inline-flex items-center px-5 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary font-medium mb-6 text-sm"
           >
             <Star className="w-4 h-4 mr-2" />
+=======
+            className="inline-flex items-center px-4 sm:px-5 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary font-medium mb-6 text-xs sm:text-sm"
+          >
+            <Star className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+>>>>>>> 74acc0a (Initial commit of my project)
             Early Bird: 50% off first 3 months
           </motion.div>
         </motion.div>
@@ -112,7 +134,11 @@ const PricingSection = () => {
             hidden: {},
             visible: { transition: { staggerChildren: 0.10 } }
           }}
+<<<<<<< HEAD
           className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto"
+=======
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 max-w-4xl sm:max-w-5xl mx-auto"
+>>>>>>> 74acc0a (Initial commit of my project)
         >
           {plans.map((plan, index) => (
             <motion.div
@@ -121,7 +147,11 @@ const PricingSection = () => {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
               }}
+<<<<<<< HEAD
               className={`relative bg-dark-card rounded-3xl p-5 border transition-all duration-300 animate-scale-in ${
+=======
+              className={`relative bg-dark-card rounded-2xl sm:rounded-3xl p-4 sm:p-5 border transition-all duration-300 animate-scale-in ${
+>>>>>>> 74acc0a (Initial commit of my project)
                 plan.popular 
                   ? 'border-primary glow-effect transform scale-105' 
                   : 'border-gray-800 hover:border-primary/50'
@@ -129,13 +159,19 @@ const PricingSection = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {plan.popular && (
+<<<<<<< HEAD
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <div className="bg-primary text-dark px-5 py-1.5 rounded-full text-xs font-bold">
+=======
+                <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-primary text-dark px-3 sm:px-5 py-1 sm:py-1.5 rounded-full text-xs font-bold">
+>>>>>>> 74acc0a (Initial commit of my project)
                     Most Popular
                   </div>
                 </div>
               )}
 
+<<<<<<< HEAD
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold text-white mb-1">{plan.name}</h3>
                 <p className="text-gray-400 mb-4 text-sm">{plan.description}</p>
@@ -149,6 +185,21 @@ const PricingSection = () => {
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center text-sm">
                     <Check className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
+=======
+              <div className="text-center mb-4 sm:mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">{plan.name}</h3>
+                <p className="text-gray-400 mb-3 sm:mb-4 text-xs sm:text-sm">{plan.description}</p>
+                <div className="mb-4">
+                  <span className="text-3xl sm:text-4xl font-bold text-white">${plan.price}</span>
+                  <span className="text-gray-400 ml-2 text-sm sm:text-base">/{plan.period}</span>
+                </div>
+              </div>
+
+              <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center text-xs sm:text-sm">
+                    <Check className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-2 flex-shrink-0" />
+>>>>>>> 74acc0a (Initial commit of my project)
                     <span className="text-gray-300">{feature}</span>
                   </li>
                 ))}
@@ -156,7 +207,11 @@ const PricingSection = () => {
 
               <Button 
                 onClick={() => window.location.href = '/dashboard'}
+<<<<<<< HEAD
                 className={`w-full py-2 text-sm font-semibold ${
+=======
+                className={`w-full py-2 sm:py-3 text-xs sm:text-sm font-semibold ${
+>>>>>>> 74acc0a (Initial commit of my project)
                   plan.popular
                     ? 'bg-primary hover:bg-primary-dark text-dark glow-effect'
                     : 'bg-transparent border border-primary text-primary hover:bg-primary hover:text-dark'
@@ -164,7 +219,11 @@ const PricingSection = () => {
               >
                 {plan.popular ? (
                   <>
+<<<<<<< HEAD
                     <Zap className="mr-2 w-4 h-4" />
+=======
+                    <Zap className="mr-2 w-3 h-3 sm:w-4 sm:h-4" />
+>>>>>>> 74acc0a (Initial commit of my project)
                     Get Started Now
                   </>
                 ) : (

@@ -79,6 +79,53 @@ export type Database = {
         }
         Relationships: []
       }
+<<<<<<< HEAD
+=======
+      subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          plan: string
+          status: string
+          current_period_start: string
+          current_period_end: string
+          cancel_at_period_end: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          plan: string
+          status?: string
+          current_period_start: string
+          current_period_end: string
+          cancel_at_period_end?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          plan?: string
+          status?: string
+          current_period_start?: string
+          current_period_end?: string
+          cancel_at_period_end?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+>>>>>>> 74acc0a (Initial commit of my project)
       trades: {
         Row: {
           chart_screenshot_url: string | null

@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+const mongoURI = "mongodb+srv://hananamir3210:LjIPzBq3POhCktre@cluster0.cnys4le.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const express = require('express');
+const connectDB = require('./db');
+
+>>>>>>> 74acc0a (Initial commit of my project)
 /**
  * Trade Master AI Backend Startup Script
  * Quick setup and validation before starting the server

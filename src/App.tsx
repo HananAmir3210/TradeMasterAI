@@ -23,6 +23,10 @@ import TermsOfService from "./pages/TermsOfService";
 import CookiePolicy from "./pages/CookiePolicy";
 import GDPR from "./pages/GDPR";
 import DashboardWrapper from "./dashboard/DashboardWrapper";
+<<<<<<< HEAD
+=======
+import AdminWrapper from "./admin/AdminWrapper";
+>>>>>>> 74acc0a (Initial commit of my project)
 
 const queryClient = new QueryClient();
 
@@ -49,6 +53,10 @@ const AppRoutes = () => {
       <Route path="/cookie-policy" element={<CookiePolicy />} />
       <Route path="/gdpr" element={<GDPR />} />
       <Route path="/dashboard/*" element={<DashboardWrapper />} />
+<<<<<<< HEAD
+=======
+      <Route path="/admin/*" element={<AdminWrapper />} />
+>>>>>>> 74acc0a (Initial commit of my project)
       {/* Catch-all 404 route */}
       <Route path="*" element={<NotFound />} />
     </Routes>
